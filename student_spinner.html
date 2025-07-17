@@ -44,14 +44,14 @@
         }
         #pointer {
             position: absolute;
-            top: -20px;
             left: 50%;
-            transform: translateX(-50%);
+            bottom: -30px;
+            transform: translateX(-50%) rotate(180deg);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
-            border-bottom: 30px solid #e74c3c;
+            border-top: 30px solid #e74c3c;
             z-index: 2;
         }
     </style>
@@ -130,18 +130,7 @@ updateNamesList();
             ctx.fill();
             ctx.strokeStyle = "#ccc";
             ctx.stroke();
-            // Move pointer to point to selected name
-            const pointer = document.getElementById('pointer');
-            let pointerAngle = (3 * Math.PI / 2 - angleOffset + 2 * Math.PI) % (2 * Math.PI);
-            // Calculate the left position for the pointer
-            const radius = 190;
-            const centerX = 200;
-            const centerY = 200;
-            const pointerX = centerX + radius * Math.cos(pointerAngle);
-            const pointerY = centerY + radius * Math.sin(pointerAngle);
-            // Convert canvas coordinates to container coordinates
-            pointer.style.left = `${pointerX - 10}px`;
-            pointer.style.top = `${pointerY - 40}px`;
+            // Pointer is now fixed at the bottom
         }
 
 drawWheel();
@@ -169,18 +158,12 @@ updateNamesList();
                     spinning = false;
                     // Calculate selected segment
                     let finalAngle = (startAngle + currentAngle) % (2 * Math.PI);
-                    let pointerAngle = (3 * Math.PI / 2 - finalAngle + 2 * Math.PI) % (2 * Math.PI);
-                    let selectedIndex = Math.floor(pointerAngle / anglePerSegment) % numSegments;
+                    // The pointer is at the bottom, which is angle = Math.PI/2
+                    // Find which segment covers this angle
+                    let pointerAngle = Math.PI / 2;
+                    let relativeAngle = (pointerAngle - finalAngle + 2 * Math.PI) % (2 * Math.PI);
+                    let selectedIndex = Math.floor(relativeAngle / anglePerSegment) % numSegments;
                     selectedNameDiv.textContent = "Selected: " + students[selectedIndex];
-                    // Move pointer to selected name
-                    const pointer = document.getElementById('pointer');
-                    const radius = 190;
-                    const centerX = 200;
-                    const centerY = 200;
-                    const pointerX = centerX + radius * Math.cos(pointerAngle);
-                    const pointerY = centerY + radius * Math.sin(pointerAngle);
-                    pointer.style.left = `${pointerX - 10}px`;
-                    pointer.style.top = `${pointerY - 40}px`;
                 }
             }
             requestAnimationFrame(animate);
